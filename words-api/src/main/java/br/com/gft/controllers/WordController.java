@@ -63,7 +63,7 @@ public class WordController {
 		return ResponseEntity.ok().body(obj);
 
 	}
-
+	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<WordDTO> delete(@PathVariable Long id) {
 		wordService.delete(id);
