@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ public class WordController {
 	private final ModelMapper mapper;
 
 	@PostMapping
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<WordDTO> create(@RequestBody WordDTO obj) {
 		Word word = wordService.create(obj);
 		WordDTO response = mapper.map(word, WordDTO.class);
@@ -40,12 +42,14 @@ public class WordController {
 	}
 
 	@GetMapping("/{id}")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<WordDTO> findById(@PathVariable Long id) {
 		WordDTO obj = mapper.map(wordService.findById(id), WordDTO.class);
 		return ResponseEntity.ok().body(obj);
 	}
 
 	@GetMapping
+	@PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USUARIO')")
 	public ResponseEntity<Page<WordDTO>> findAll(
 			@PageableDefault(size = 10, sort = "word", direction = Sort.Direction.ASC) Pageable pageable) {
 		Page<WordDTO> list = wordService.findAll(pageable).map(x -> mapper.map(x, WordDTO.class));
@@ -53,6 +57,7 @@ public class WordController {
 	}
 
 	@PutMapping("/{id}")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<WordDTO> update(@PathVariable Long id, @RequestBody WordDTO obj) {
 		wordService.update(id, obj);
 		return ResponseEntity.ok().body(obj);
