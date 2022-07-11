@@ -7,9 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WordDTO {
+public class UserDTO {
 
 	private Long id;
-	private String word;
+	private String nome;
+	private String username;
+	private String perfil;
 
 }

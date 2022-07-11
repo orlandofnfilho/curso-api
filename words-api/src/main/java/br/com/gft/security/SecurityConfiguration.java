@@ -1,4 +1,4 @@
-package gft.security;
+package br.com.gft.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,20 +15,21 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import gft.filter.FiltroAutenticacao;
-import gft.services.AutenticacaoService;
-import gft.services.UsuarioService;
+import br.com.gft.filter.FilterAuthentication;
+import br.com.gft.services.AuthenticationService;
+import br.com.gft.services.UserService;
 
+@SuppressWarnings("deprecation")
 @EnableWebSecurity
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private UsuarioService usuarioService;
+	private UserService userService;
 
 	@Autowired
-	private AutenticacaoService autenticacaoService;
+	private AuthenticationService authenticationService;
 
 	@Override
 	@Bean
@@ -38,7 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(usuarioService).passwordEncoder(new BCryptPasswordEncoder());
+		auth.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder());
 	}
 
 	@Override
@@ -49,11 +50,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers(HttpMethod.POST, "/auth").permitAll()
-			.anyRequest().authenticated()
-			.and().csrf().disable()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and().addFilterBefore(new FiltroAutenticacao(autenticacaoService, usuarioService),
+		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
+		.anyRequest().authenticated()
+		.and().csrf().disable()
+		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		.and().addFilterBefore(new FilterAuthentication(authenticationService, userService),
 						UsernamePasswordAuthenticationFilter.class);
 	}
 

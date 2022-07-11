@@ -1,9 +1,10 @@
 package br.com.gft.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.gft.dto.WordDTO;
@@ -22,14 +23,14 @@ public class WordService {
 	private final ModelMapper mapper;
 
 	public Word create(WordDTO obj) {
-		Word newWord = mapper.map(obj, Word.class);
 		findByWord(obj);
+		Word newWord = mapper.map(obj, Word.class);
 		return wordRepository.save(newWord);
 
 	}
 
-	public List<Word> findAll() {
-		return wordRepository.findAll();
+	public Page<Word> findAll(Pageable pageable) {
+		return wordRepository.findAll(pageable);
 	}
 
 	public Word findById(Long id) {

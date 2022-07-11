@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WordDTO {
+public class TokenDTO {
 
-	private Long id;
-	private String word;
+	private String Token;
 
 }

@@ -1,10 +1,12 @@
 package br.com.gft.controllers;
 
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +29,6 @@ import lombok.AllArgsConstructor;
 public class WordController {
 
 	private final WordService wordService;
-
 	private final ModelMapper mapper;
 
 	@PostMapping
@@ -45,9 +46,9 @@ public class WordController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<WordDTO>> findAll() {
-		List<WordDTO> list = wordService.findAll().stream().map(x -> mapper.map(x, WordDTO.class))
-				.collect(Collectors.toList());
+	public ResponseEntity<Page<WordDTO>> findAll(
+			@PageableDefault(size = 10, sort = "word", direction = Sort.Direction.ASC) Pageable pageable) {
+		Page<WordDTO> list = wordService.findAll(pageable).map(x -> mapper.map(x, WordDTO.class));
 		return ResponseEntity.ok().body(list);
 	}
 
