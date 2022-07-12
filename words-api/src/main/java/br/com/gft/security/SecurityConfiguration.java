@@ -32,6 +32,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private AuthenticationService authenticationService;
 
+	private static final String[] AUTH_WHITELIST = {
+			// -- Swagger UI v2
+			"/v2/api-docs", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
+			"/configuration/security", "/swagger-ui.html", "/webjars/**",
+			// -- Swagger UI v3 (OpenAPI)
+			"/v3/api-docs/**", "/swagger-ui/**"
+			// other public endpoints of your API may be appended to this array
+	};
+
 	@Override
 	@Bean
 	protected AuthenticationManager authenticationManager() throws Exception {
@@ -51,16 +60,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
-		.anyRequest().authenticated()
-		.and().csrf().disable()
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		.and().addFilterBefore(new FilterAuthentication(authenticationService, userService),
+		http.authorizeRequests().antMatchers(HttpMethod.POST, "/api/v1/auth").permitAll().and().authorizeRequests()
+				.antMatchers(AUTH_WHITELIST).permitAll().anyRequest().authenticated().and().csrf().disable()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				.addFilterBefore(new FilterAuthentication(authenticationService, userService),
 						UsernamePasswordAuthenticationFilter.class);
 	}
-	
+
 	@Bean
-	public PasswordEncoder passwordEncoder() {
+	private PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
