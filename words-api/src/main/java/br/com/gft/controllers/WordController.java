@@ -63,8 +63,9 @@ public class WordController {
 		return ResponseEntity.ok().body(obj);
 
 	}
-	
+
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ResponseEntity<WordDTO> delete(@PathVariable Long id) {
 		wordService.delete(id);
 		return ResponseEntity.noContent().build();

@@ -10,10 +10,14 @@ import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "tb_perfis")
 public class Perfil implements Serializable, GrantedAuthority {
 	private static final long serialVersionUID = 1L;

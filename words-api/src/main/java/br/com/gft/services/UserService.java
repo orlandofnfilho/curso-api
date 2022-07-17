@@ -1,14 +1,16 @@
 package br.com.gft.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import br.com.gft.dto.RegUserDTO;
 import br.com.gft.entities.User;
 import br.com.gft.repositories.UserRepository;
 import br.com.gft.services.exceptions.DataIntegratyViolationException;
@@ -19,12 +21,10 @@ public class UserService implements UserDetailsService {
 
 	private final UserRepository userRepository;
 	private final ModelMapper mapper;
-	private final PasswordEncoder encoder;
 
-	public UserService(UserRepository userRepository, ModelMapper mapper, PasswordEncoder encoder) {
+	public UserService(UserRepository userRepository, ModelMapper mapper) {
 		this.userRepository = userRepository;
 		this.mapper = mapper;
-		this.encoder = encoder;
 
 	}
 
@@ -49,9 +49,15 @@ public class UserService implements UserDetailsService {
 		return user.get();
 	}
 
-	public User create(User obj) {
-		emailValid(obj.getUsername());
+	public List<User> findAll() {
+		return userRepository.findAll();
+	}
+
+	public User create(RegUserDTO obj) {
+		emailValid(obj.getEmail());
 		User user = mapper.map(obj, User.class);
+		user.getPerfil().setId(obj.getPerfilId());
+		user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
 		return userRepository.save(user);
 	}
 
@@ -63,9 +69,8 @@ public class UserService implements UserDetailsService {
 	public User update(Long id, User obj) {
 		validUpdate(id, obj);
 		obj.setId(id);
-		obj.setPassword(encoder.encode(obj.getPassword()));
+		obj.setPassword(new BCryptPasswordEncoder().encode(obj.getPassword()));
 		return userRepository.save(obj);
-
 	}
 
 	private void emailValid(String email) {

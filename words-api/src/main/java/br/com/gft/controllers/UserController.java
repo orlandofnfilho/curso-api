@@ -1,6 +1,8 @@
 package br.com.gft.controllers;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import br.com.gft.dto.RegUserDTO;
 import br.com.gft.dto.UserDTO;
 import br.com.gft.entities.User;
 import br.com.gft.services.UserService;
@@ -30,10 +33,12 @@ public class UserController {
 
 	@PostMapping
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ResponseEntity<User> create(@RequestBody User obj) {
+	public ResponseEntity<UserDTO> create(@RequestBody RegUserDTO obj) {
 		User user = userService.create(obj);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
-		return ResponseEntity.created(uri).body(user);
+		UserDTO response = mapper.map(user, UserDTO.class);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(response.getId())
+				.toUri();
+		return ResponseEntity.created(uri).body(response);
 	}
 
 	@GetMapping("/{id}")
@@ -41,6 +46,14 @@ public class UserController {
 	public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
 		UserDTO obj = mapper.map(userService.findById(id), UserDTO.class);
 		return ResponseEntity.ok().body(obj);
+	}
+
+	@GetMapping
+	@PreAuthorize("hasAuthority('ADMIN')")
+	public ResponseEntity<List<UserDTO>> findAll() {
+		List<UserDTO> list = userService.findAll().stream().map(x -> mapper.map(x, UserDTO.class))
+				.collect(Collectors.toList());
+		return ResponseEntity.ok().body(list);
 	}
 
 	@DeleteMapping("/{id}")

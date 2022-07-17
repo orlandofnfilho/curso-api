@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+@Data
+public class RegUserDTO {
 
-	private Long id;
 	private String nome;
-	private String username;
-	private String nomePerfil;
+	private String email;
+	private String password;
+	private Long perfilId;
 
 }
