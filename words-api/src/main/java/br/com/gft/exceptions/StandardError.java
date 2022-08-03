@@ -1,4 +1,4 @@
-package br.com.gft.controllers.exceptions;
+package br.com.gft.exceptions;
 
 import java.io.Serializable;
 import java.time.Instant;

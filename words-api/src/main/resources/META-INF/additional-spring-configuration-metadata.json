@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "words-api.jwt.secret",
+    "type": "java.lang.String",
+    "description": "The secret key to generate and validate JWT tokens"
+  },
+  {
+    "name": "words-api.jwt.expiration",
+    "type": "java.lang.String",
+    "description": "Expiration time (in miliseconds) for JWT tokens"
+  },
+  {
+    "name": "words-api.jwt.issuer",
+    "type": "java.lang.String",
+    "description": "JWT's Issuer"
+  }
+]}

@@ -1,17 +1,15 @@
-package br.com.gft.controllers.exceptions;
+package br.com.gft.exceptions;
 
 import java.time.Instant;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.hibernate.PropertyValueException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import br.com.gft.services.exceptions.DataIntegratyViolationException;
-import br.com.gft.services.exceptions.ObjectNotFoundException;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -25,20 +23,20 @@ public class ControllerExceptionHandler {
 		err.setError("Resource not found");
 		err.setMessage(e.getMessage());
 		err.setPath(request.getRequestURI());
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+		return ResponseEntity.status(err.getStatus()).body(err);
 
 	}
 
-	@ExceptionHandler(DataIntegratyViolationException.class)
-	public ResponseEntity<StandardError> dataIntegratyViolation(DataIntegratyViolationException e, HttpServletRequest request) {
+	@ExceptionHandler(DataIntegrityViolationException.class)
+	public ResponseEntity<StandardError> dataIntegratyViolation(DataIntegrityViolationException e, HttpServletRequest request) {
 
 		StandardError err = new StandardError();
 		err.setTimestamp(Instant.now());
 		err.setStatus(HttpStatus.CONFLICT.value());
-		err.setError("Data Integraty Violation");
+		err.setError("Data Integrity Violation");
 		err.setMessage(e.getMessage());
 		err.setPath(request.getRequestURI());
-		return ResponseEntity.status(HttpStatus.CONFLICT).body(err);
+		return ResponseEntity.status(err.getStatus()).body(err);
 
 	}
 	
@@ -51,7 +49,20 @@ public class ControllerExceptionHandler {
 		err.setError("Access Deneid");
 		err.setMessage(e.getMessage());
 		err.setPath(request.getRequestURI());
-		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(err);
+		return ResponseEntity.status(err.getStatus()).body(err);
+
+	}
+	
+	@ExceptionHandler(PropertyValueException.class)
+	public ResponseEntity<StandardError> propertyValueException(PropertyValueException e, HttpServletRequest request) {
+
+		StandardError err = new StandardError();
+		err.setTimestamp(Instant.now());
+		err.setStatus(HttpStatus.BAD_REQUEST.value());
+		err.setError("Invalid Request");
+		err.setMessage("Requisição inválida");
+		err.setPath(request.getRequestURI());
+		return ResponseEntity.status(err.getStatus()).body(err);
 
 	}
 

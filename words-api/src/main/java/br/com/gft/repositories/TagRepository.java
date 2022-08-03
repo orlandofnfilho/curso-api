@@ -6,15 +6,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
-import br.com.gft.entities.Word;
+import br.com.gft.entities.Tag;
 
 @Repository
-public interface WordRepository extends JpaRepository<Word, Long> {
+public interface TagRepository extends JpaRepository<Tag, Long>{
+	
+	Optional<Tag> findByNameIgnoreCase(String name);
 
-	Optional<Word> findByNameIgnoreCase(String name);
-
-	Page<Word> findAll(Pageable pageable);
+	Page<Tag> findAll(Pageable pageable);
 
 }

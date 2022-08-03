@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.gft.controllers.docs.AuthenticationControllerDocs;
 import br.com.gft.dto.TokenDTO;
 import br.com.gft.entities.AuthenticationForm;
 import br.com.gft.services.AuthenticationService;
 
 @RestController
 @RequestMapping("/api/v1/auth")
-public class AuthenticationController {
+public class AuthenticationController implements AuthenticationControllerDocs{
 
 	@Autowired
 	AuthenticationService authenticationService;

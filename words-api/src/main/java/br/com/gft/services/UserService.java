@@ -12,13 +12,15 @@ import org.springframework.stereotype.Service;
 
 import br.com.gft.dto.RegUserDTO;
 import br.com.gft.entities.User;
+import br.com.gft.exceptions.DataIntegrityViolationException;
+import br.com.gft.exceptions.ObjectNotFoundException;
 import br.com.gft.repositories.UserRepository;
-import br.com.gft.services.exceptions.DataIntegratyViolationException;
-import br.com.gft.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class UserService implements UserDetailsService {
 
+	private static final String E_MAIL_JA_CADASTRADO = "E-mail já cadastrado";
+	private static final String USUARIO_NAO_ENCONTRADO = "Usuário não encontrado";
 	private final UserRepository userRepository;
 	private final ModelMapper mapper;
 
@@ -31,7 +33,7 @@ public class UserService implements UserDetailsService {
 	public User findByEmail(String email) {
 		Optional<User> optional = userRepository.findByEmail(email);
 		if (optional.isEmpty()) {
-			throw new UsernameNotFoundException("Usuário não encontrado");
+			throw new UsernameNotFoundException(USUARIO_NAO_ENCONTRADO);
 		}
 		return optional.get();
 	}
@@ -44,7 +46,7 @@ public class UserService implements UserDetailsService {
 	public User findById(Long idUser) {
 		Optional<User> user = userRepository.findById(idUser);
 		if (user.isEmpty()) {
-			throw new ObjectNotFoundException("Usuário não encontrado");
+			throw new ObjectNotFoundException(USUARIO_NAO_ENCONTRADO);
 		}
 		return user.get();
 	}
@@ -73,21 +75,21 @@ public class UserService implements UserDetailsService {
 		return userRepository.save(obj);
 	}
 
-	private void emailValid(String email) {
+	protected void emailValid(String email) {
 		Optional<User> userFound = userRepository.findByEmail(email);
-		if (email.length() < 10 && userFound.isPresent()) {
-			throw new DataIntegratyViolationException("Email já cadastrado");
+		if (email.length() < 12 && userFound.isPresent()) {
+			throw new DataIntegrityViolationException(E_MAIL_JA_CADASTRADO);
 		}
 	}
 
-	private void validUpdate(Long id, User obj) {
+	protected void validUpdate(Long id, User obj) {
 		Optional<User> userSaved = userRepository.findByEmail(obj.getEmail());
 		Optional<User> userFoundById = userRepository.findById(id);
 		if (userSaved.isPresent()) {
-			throw new DataIntegratyViolationException("E-mail já cadastrado");
+			throw new DataIntegrityViolationException(E_MAIL_JA_CADASTRADO);
 		}
 		if (userFoundById.isEmpty()) {
-			throw new ObjectNotFoundException("Usuário não encontrado");
+			throw new ObjectNotFoundException(USUARIO_NAO_ENCONTRADO);
 		}
 	}
 

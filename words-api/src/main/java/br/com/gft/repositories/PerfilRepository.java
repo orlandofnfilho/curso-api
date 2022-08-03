@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import br.com.gft.entities.Perfil;
 
 @Repository
-public interface PerfilRepository extends JpaRepository<Perfil, Long> {
+public interface PerfilRepository extends JpaRepository<Perfil, Long>{
 
 }

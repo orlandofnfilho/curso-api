@@ -11,7 +11,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.LazyCollection;
@@ -29,8 +31,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tb_words")
-public class Word implements Serializable{
+@Table(name = "tb_tags")
+public class Tag implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -42,25 +44,27 @@ public class Word implements Serializable{
 	
 	@JsonIgnore
 	@LazyCollection(LazyCollectionOption.TRUE)
-	@ManyToMany(mappedBy = "words", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-	private Set<Tag> tags = new HashSet<>();
+	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+	@JoinTable(
+	    	name = "tb_word_tag",
+	      	joinColumns = {@JoinColumn(name = "tag_id")}
+	    	, inverseJoinColumns = {@JoinColumn(name = "word_id")}
+	    )
+	private Set<Word> words = new HashSet<>();
 	
-	
-	public void addTag(Tag tag, boolean setTag)
+	public void addWord(Word word, boolean setWord)
 	{
-		tags.add(tag);
-		if(setTag)
+		words.add(word);
+		if(setWord)
 		{
-			tag.addWord(this, false);
+			word.addTag(this, false);
 		}
 	}
-
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, name);
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -70,8 +74,8 @@ public class Word implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Word other = (Word) obj;
+		Tag other = (Tag) obj;
 		return Objects.equals(id, other.id) && Objects.equals(name, other.name);
 	}
-	
+
 }

@@ -1,0 +1,14 @@
+[X] Cada dupla deve criar uma branch e fazer seus commits dentro dela
+
+[X] Na branch da dupla deve ter um Readme com pelo menos os nomes dos integrantes da dupla e os endpoints criados
+
+[X] CRUD de Palavras - Apenas um atributo (termo, por exemplo)
+[X] CRUD de Etiquetas - Apenas um atributo (nome, por exemplo)
+[X] Relacionamento muitos-pra-muitos entre Etiqueta e Palavra
+[ ] Busca de Palavras por Etiqueta
+[ ] Busca de Etiqueta por Palavras
+[ ] TDD
+[X] Segurança com JWT
+[X] Acesso admin para o CRUD completo
+[X] Acesso usuario apenas para leituras (o que inclui as listas)
+[ ] O que mais a dupla desejar fazer

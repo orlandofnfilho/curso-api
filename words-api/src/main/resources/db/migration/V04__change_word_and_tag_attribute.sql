@@ -1,0 +1,2 @@
+ALTER TABLE tb_words RENAME COLUMN word TO name;
+ALTER TABLE tb_tags RENAME COLUMN tag TO name;

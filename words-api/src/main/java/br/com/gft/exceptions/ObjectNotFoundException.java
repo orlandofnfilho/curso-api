@@ -1,4 +1,4 @@
-package br.com.gft.services.exceptions;
+package br.com.gft.exceptions;
 
 public class ObjectNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
