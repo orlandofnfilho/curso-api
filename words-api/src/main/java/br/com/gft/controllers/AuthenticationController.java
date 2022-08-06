@@ -16,7 +16,7 @@ import br.com.gft.services.AuthenticationService;
 
 @RestController
 @RequestMapping("/api/v1/auth")
-public class AuthenticationController implements AuthenticationControllerDocs{
+public class AuthenticationController implements AuthenticationControllerDocs {
 
 	@Autowired
 	AuthenticationService authenticationService;
