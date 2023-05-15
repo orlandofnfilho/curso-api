@@ -1,11 +1,10 @@
 package com.ficr.edu.bancoapi.controllers;
 
-import com.ficr.edu.bancoapi.dto.ContaRequestDTO;
+import com.ficr.edu.bancoapi.dto.ContaEntradaDTO;
 import com.ficr.edu.bancoapi.dto.TransacaoDTO;
 import com.ficr.edu.bancoapi.dto.TranferenciaDTO;
 import com.ficr.edu.bancoapi.entities.Conta;
 import com.ficr.edu.bancoapi.services.ContaService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +21,8 @@ public class ContaController {
     }
 
     @PostMapping
-    public ResponseEntity<Conta> cadastrarConta(@RequestBody ContaRequestDTO contaRequestDTO) {
-        Conta response = contaService.saveConta(contaRequestDTO);
+    public ResponseEntity<Conta> cadastrarConta(@RequestBody ContaEntradaDTO contaEntradaDTO) {
+        Conta response = contaService.saveConta(contaEntradaDTO);
         return ResponseEntity.ok().body(response);
     }
 

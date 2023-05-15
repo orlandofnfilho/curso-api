@@ -1,15 +1,15 @@
 package com.ficr.edu.bancoapi.dto;
 
-public class ContaRequestDTO {
+public class ContaEntradaDTO {
 
     private String numero;
     private String agencia;
     private String cliente;
 
-    public ContaRequestDTO() {
+    public ContaEntradaDTO() {
     }
 
-    public ContaRequestDTO(String numero, String agencia, String cliente) {
+    public ContaEntradaDTO(String numero, String agencia, String cliente) {
         this.numero = numero;
         this.agencia = agencia;
         this.cliente = cliente;

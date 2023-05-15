@@ -1,6 +1,6 @@
 package com.ficr.edu.bancoapi.services;
 
-import com.ficr.edu.bancoapi.dto.ContaRequestDTO;
+import com.ficr.edu.bancoapi.dto.ContaEntradaDTO;
 import com.ficr.edu.bancoapi.dto.TransacaoDTO;
 import com.ficr.edu.bancoapi.dto.TranferenciaDTO;
 import com.ficr.edu.bancoapi.entities.Conta;
@@ -20,9 +20,9 @@ public class ContaService {
         this.contaRepository = contaRepository;
     }
 
-    public Conta saveConta(ContaRequestDTO contaRequestDTO) {
-        Conta conta = new Conta(contaRequestDTO.getNumero(),
-                contaRequestDTO.getAgencia(), contaRequestDTO.getCliente());
+    public Conta saveConta(ContaEntradaDTO contaEntradaDTO) {
+        Conta conta = new Conta(contaEntradaDTO.getNumero(),
+                contaEntradaDTO.getAgencia(), contaEntradaDTO.getCliente());
         return contaRepository.save(conta);
     }
 
