@@ -46,8 +46,8 @@ public class ContaController {
     }
 
     @PutMapping("/{idConta}")
-    public ResponseEntity<Conta> alterarConta(@RequestBody Conta conta, @PathVariable Long idConta) {
-        Conta response = contaService.updateConta(conta, idConta);
+    public ResponseEntity<Conta> alterarConta(@RequestBody ContaEntradaDTO contaEntradaDTO, @PathVariable Long idConta) {
+        Conta response = contaService.updateConta(contaEntradaDTO, idConta);
         return ResponseEntity.ok().body(response);
     }
 

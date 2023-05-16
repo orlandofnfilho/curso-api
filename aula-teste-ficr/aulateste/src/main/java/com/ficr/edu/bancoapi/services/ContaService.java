@@ -40,12 +40,11 @@ public class ContaService {
         contaRepository.deleteById(idConta);
     }
 
-    public Conta updateConta(Conta conta, Long idConta) {
+    public Conta updateConta(ContaEntradaDTO contaEntradaDTO, Long idConta) {
         Conta contaExistente = this.getContaById(idConta);
-        contaExistente.setNumero(conta.getNumero());
-        contaExistente.setAgencia(conta.getNumero());
-        contaExistente.setCliente(conta.getCliente());
-        contaExistente.setSaldo(conta.getSaldo());
+        contaExistente.setNumero(contaEntradaDTO.getNumero());
+        contaExistente.setAgencia(contaEntradaDTO.getNumero());
+        contaExistente.setCliente(contaEntradaDTO.getCliente());
         return contaRepository.save(contaExistente);
     }
 
