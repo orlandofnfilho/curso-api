@@ -1,5 +1,6 @@
 package com.ficr.edu.bancoapi.entities;
 
+import com.ficr.edu.bancoapi.exceptions.BusinessRuleException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -96,5 +97,57 @@ public class Conta {
                 ", cliente='" + cliente + '\'' +
                 ", saldo=" + saldo +
                 '}';
+    }
+    public void verificaSaldo(Double saldo, Double valor) {
+        if (saldo < valor || saldo <= 0)
+            throw new BusinessRuleException("Você nao tem saldo suficiente para realizar a operaçao!");
+    }
+
+    public static class Builder {
+        private Long id;
+        private String numero;
+        private String agencia;
+        private String cliente;
+        private Double saldo;
+
+        public Builder() {
+            // Inicialize os campos opcionais com valores padrão
+            this.saldo = 0.0;
+        }
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder numero(String numero) {
+            this.numero = numero;
+            return this;
+        }
+
+        public Builder agencia(String agencia) {
+            this.agencia = agencia;
+            return this;
+        }
+
+        public Builder cliente(String cliente) {
+            this.cliente = cliente;
+            return this;
+        }
+
+        public Builder saldo(Double saldo) {
+            this.saldo = saldo;
+            return this;
+        }
+
+        public Conta build() {
+            Conta conta = new Conta();
+            conta.id = this.id;
+            conta.numero = this.numero;
+            conta.agencia = this.agencia;
+            conta.cliente = this.cliente;
+            conta.saldo = this.saldo;
+            return conta;
+        }
     }
 }

@@ -52,7 +52,7 @@ public class ContaService {
         Conta contaOrigin = this.getContaById(tranferenciaDTO.getIdContaOrigin());
         Conta contaDestino =  this.getContaById(tranferenciaDTO.getIdContaDestino());
 
-        verificaSaldo(contaOrigin, tranferenciaDTO.getValor());
+        contaOrigin.verificaSaldo(contaOrigin.getSaldo(), tranferenciaDTO.getValor());
 
         contaOrigin.setSaldo(contaOrigin.getSaldo() - tranferenciaDTO.getValor());
         contaDestino.setSaldo(contaDestino.getSaldo() + tranferenciaDTO.getValor());
@@ -71,7 +71,7 @@ public class ContaService {
     public String sacar(TransacaoDTO transacaoDTO) {
         verificaValor(transacaoDTO.getValor());
         Conta contaExistente = this.getContaById(transacaoDTO.getIdConta());
-        verificaSaldo(contaExistente, transacaoDTO.getValor());
+        contaExistente.verificaSaldo(contaExistente.getSaldo(), transacaoDTO.getValor());
         contaExistente.setSaldo(contaExistente.getSaldo() - transacaoDTO.getValor());
         contaRepository.save(contaExistente);
         return "Saque realizado com sucesso!";
@@ -81,12 +81,4 @@ public class ContaService {
         if(valor <= 0)
             throw new BusinessRuleException("O valor precisa ser maior que zero");
     }
-
-    private static void verificaSaldo(Conta contaOrigin, Double valor) {
-        if (contaOrigin.getSaldo() < valor || contaOrigin.getSaldo() <= 0)
-            throw new BusinessRuleException("Você nao tem saldo suficiente para realizar a operaçao!");
-    }
-
-
-
 }
