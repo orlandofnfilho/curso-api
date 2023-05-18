@@ -52,7 +52,7 @@ public class ContaService {
         Conta contaOrigin = this.getContaById(tranferenciaDTO.getIdContaOrigin());
         Conta contaDestino =  this.getContaById(tranferenciaDTO.getIdContaDestino());
 
-        contaOrigin.verificaSaldo(contaOrigin.getSaldo(), tranferenciaDTO.getValor());
+        contaOrigin.verificaSaldo(tranferenciaDTO.getValor());
 
         contaOrigin.setSaldo(contaOrigin.getSaldo() - tranferenciaDTO.getValor());
         contaDestino.setSaldo(contaDestino.getSaldo() + tranferenciaDTO.getValor());
@@ -71,7 +71,7 @@ public class ContaService {
     public String sacar(TransacaoDTO transacaoDTO) {
         verificaValor(transacaoDTO.getValor());
         Conta contaExistente = this.getContaById(transacaoDTO.getIdConta());
-        contaExistente.verificaSaldo(contaExistente.getSaldo(), transacaoDTO.getValor());
+        contaExistente.verificaSaldo(transacaoDTO.getValor());
         contaExistente.setSaldo(contaExistente.getSaldo() - transacaoDTO.getValor());
         contaRepository.save(contaExistente);
         return "Saque realizado com sucesso!";

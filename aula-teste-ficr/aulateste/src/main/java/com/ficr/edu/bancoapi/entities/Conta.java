@@ -75,34 +75,6 @@ public class Conta {
         this.saldo = saldo;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Conta conta = (Conta) o;
-        return getId() == conta.getId() && Objects.equals(getNumero(), conta.getNumero());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getNumero());
-    }
-
-    @Override
-    public String toString() {
-        return "Conta{" +
-                "id=" + id +
-                ", numero='" + numero + '\'' +
-                ", agencia='" + agencia + '\'' +
-                ", cliente='" + cliente + '\'' +
-                ", saldo=" + saldo +
-                '}';
-    }
-    public void verificaSaldo(Double saldo, Double valor) {
-        if (saldo < valor || saldo <= 0)
-            throw new BusinessRuleException("Você nao tem saldo suficiente para realizar a operaçao!");
-    }
-
     public static class Builder {
         private Long id;
         private String numero;
@@ -149,5 +121,33 @@ public class Conta {
             conta.saldo = this.saldo;
             return conta;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Conta conta = (Conta) o;
+        return getId() == conta.getId() && Objects.equals(getNumero(), conta.getNumero());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getNumero());
+    }
+
+    @Override
+    public String toString() {
+        return "Conta{" +
+                "id=" + id +
+                ", numero='" + numero + '\'' +
+                ", agencia='" + agencia + '\'' +
+                ", cliente='" + cliente + '\'' +
+                ", saldo=" + saldo +
+                '}';
+    }
+    public void verificaSaldo(Double valor) {
+        if (this.saldo < valor || this.saldo <= 0)
+            throw new BusinessRuleException("Você nao tem saldo suficiente para realizar a operaçao!");
     }
 }

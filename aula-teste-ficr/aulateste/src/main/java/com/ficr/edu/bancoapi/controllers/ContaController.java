@@ -64,7 +64,7 @@ public class ContaController {
     }
 
     @PostMapping("/sacar")
-    public ResponseEntity<Object> sacar(@RequestBody TransacaoDTO transacaoDTO) {
+    public ResponseEntity<String> sacar(@RequestBody TransacaoDTO transacaoDTO) {
         String response = contaService.sacar(transacaoDTO);
         return ResponseEntity.ok().body(response);
     }
