@@ -53,6 +53,7 @@ public class ContaService {
         Conta contaDestino =  this.getContaById(tranferenciaDTO.getIdContaDestino());
 
         contaOrigin.verificaSaldo(tranferenciaDTO.getValor());
+        verificaValor(tranferenciaDTO.getValor());
 
         contaOrigin.setSaldo(contaOrigin.getSaldo() - tranferenciaDTO.getValor());
         contaDestino.setSaldo(contaDestino.getSaldo() + tranferenciaDTO.getValor());

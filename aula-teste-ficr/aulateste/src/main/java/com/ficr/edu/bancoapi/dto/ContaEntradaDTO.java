@@ -1,41 +1,54 @@
 package com.ficr.edu.bancoapi.dto;
 
 public class ContaEntradaDTO {
-
     private String numero;
     private String agencia;
     private String cliente;
 
-    public ContaEntradaDTO() {
-    }
-
-    public ContaEntradaDTO(String numero, String agencia, String cliente) {
-        this.numero = numero;
-        this.agencia = agencia;
-        this.cliente = cliente;
+    private ContaEntradaDTO() {
     }
 
     public String getNumero() {
         return numero;
     }
 
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
     public String getAgencia() {
         return agencia;
-    }
-
-    public void setAgencia(String agencia) {
-        this.agencia = agencia;
     }
 
     public String getCliente() {
         return cliente;
     }
 
-    public void setCliente(String cliente) {
-        this.cliente = cliente;
+    public static class Builder {
+        private String numero;
+        private String agencia;
+        private String cliente;
+
+        public Builder() {
+        }
+
+        public Builder numero(String numero) {
+            this.numero = numero;
+            return this;
+        }
+
+        public Builder agencia(String agencia) {
+            this.agencia = agencia;
+            return this;
+        }
+
+        public Builder cliente(String cliente) {
+            this.cliente = cliente;
+            return this;
+        }
+
+        public ContaEntradaDTO build() {
+            ContaEntradaDTO contaEntradaDTO = new ContaEntradaDTO();
+            contaEntradaDTO.numero = this.numero;
+            contaEntradaDTO.agencia = this.agencia;
+            contaEntradaDTO.cliente = this.cliente;
+            return contaEntradaDTO;
+        }
     }
 }
