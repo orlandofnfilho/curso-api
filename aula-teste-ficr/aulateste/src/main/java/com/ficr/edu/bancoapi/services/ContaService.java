@@ -2,7 +2,7 @@ package com.ficr.edu.bancoapi.services;
 
 import com.ficr.edu.bancoapi.dto.ContaEntradaDTO;
 import com.ficr.edu.bancoapi.dto.TransacaoDTO;
-import com.ficr.edu.bancoapi.dto.TranferenciaDTO;
+import com.ficr.edu.bancoapi.dto.TransferenciaDTO;
 import com.ficr.edu.bancoapi.entities.Conta;
 import com.ficr.edu.bancoapi.exceptions.BusinessRuleException;
 import com.ficr.edu.bancoapi.exceptions.ResourceNotFoundException;
@@ -42,21 +42,21 @@ public class ContaService {
 
     public Conta updateConta(ContaEntradaDTO contaEntradaDTO, Long idConta) {
         Conta contaExistente = this.getContaById(idConta);
+        contaExistente.setAgencia(contaEntradaDTO.getAgencia());
         contaExistente.setNumero(contaEntradaDTO.getNumero());
-        contaExistente.setAgencia(contaEntradaDTO.getNumero());
         contaExistente.setCliente(contaEntradaDTO.getCliente());
         return contaRepository.save(contaExistente);
     }
 
-    public String realizarTranferencia(TranferenciaDTO tranferenciaDTO) {
-        Conta contaOrigin = this.getContaById(tranferenciaDTO.getIdContaOrigin());
-        Conta contaDestino =  this.getContaById(tranferenciaDTO.getIdContaDestino());
+    public String realizarTranferencia(TransferenciaDTO transferenciaDTO) {
+        Conta contaOrigin = this.getContaById(transferenciaDTO.getIdContaOrigin());
+        Conta contaDestino =  this.getContaById(transferenciaDTO.getIdContaDestino());
 
-        contaOrigin.verificaSaldo(tranferenciaDTO.getValor());
-        verificaValor(tranferenciaDTO.getValor());
+        contaOrigin.verificaSaldo(transferenciaDTO.getValor());
+        verificaValor(transferenciaDTO.getValor());
 
-        contaOrigin.setSaldo(contaOrigin.getSaldo() - tranferenciaDTO.getValor());
-        contaDestino.setSaldo(contaDestino.getSaldo() + tranferenciaDTO.getValor());
+        contaOrigin.setSaldo(contaOrigin.getSaldo() - transferenciaDTO.getValor());
+        contaDestino.setSaldo(contaDestino.getSaldo() + transferenciaDTO.getValor());
         contaRepository.saveAll(List.of(contaOrigin, contaDestino));
         return "Transferência realizada com sucesso!";
     }
@@ -78,7 +78,7 @@ public class ContaService {
         return "Saque realizado com sucesso!";
     }
 
-    private static void verificaValor(Double valor) {
+    public static void verificaValor(Double valor) {
         if(valor <= 0)
             throw new BusinessRuleException("O valor precisa ser maior que zero");
     }

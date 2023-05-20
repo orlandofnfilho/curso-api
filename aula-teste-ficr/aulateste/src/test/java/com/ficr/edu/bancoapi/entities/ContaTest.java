@@ -23,7 +23,9 @@ public class ContaTest {
 
         Conta conta = ContaTemplate.entidade();
         conta.setSaldo(500.00);
-        assertThrows(BusinessRuleException.class, () -> conta.verificaSaldo(1000.00));
+        BusinessRuleException exception = assertThrows(BusinessRuleException.class,
+                () -> conta.verificaSaldo(1000.0));
+        assertEquals("Você nao tem saldo suficiente para realizar a operaçao!", exception.getMessage());
 
     }
 }

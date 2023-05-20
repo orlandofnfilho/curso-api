@@ -28,4 +28,26 @@ public class TransacaoDTO {
     public void setValor(Double valor) {
         this.valor = valor;
     }
+
+    public static class Builder {
+        private Long idConta;
+        private Double valor;
+
+        public Builder idConta(Long idConta) {
+            this.idConta = idConta;
+            return this;
+        }
+
+        public Builder valor(Double valor) {
+            this.valor = valor;
+            return this;
+        }
+
+        public TransacaoDTO build() {
+            TransacaoDTO transacaoDTO = new TransacaoDTO();
+            transacaoDTO.idConta = this.idConta;
+            transacaoDTO.valor = this.valor;
+            return transacaoDTO;
+        }
+    }
 }

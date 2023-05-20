@@ -2,7 +2,7 @@ package com.ficr.edu.bancoapi.controllers;
 
 import com.ficr.edu.bancoapi.dto.ContaEntradaDTO;
 import com.ficr.edu.bancoapi.dto.TransacaoDTO;
-import com.ficr.edu.bancoapi.dto.TranferenciaDTO;
+import com.ficr.edu.bancoapi.dto.TransferenciaDTO;
 import com.ficr.edu.bancoapi.entities.Conta;
 import com.ficr.edu.bancoapi.services.ContaService;
 import org.springframework.http.ResponseEntity;
@@ -52,8 +52,8 @@ public class ContaController {
     }
 
     @PostMapping("/transferir")
-    public ResponseEntity<String> tranferirValor(@RequestBody TranferenciaDTO tranferenciaDTO) {
-        String response = contaService.realizarTranferencia(tranferenciaDTO);
+    public ResponseEntity<String> tranferirValor(@RequestBody TransferenciaDTO transferenciaDTO) {
+        String response = contaService.realizarTranferencia(transferenciaDTO);
         return ResponseEntity.ok().body(response);
     }
 
