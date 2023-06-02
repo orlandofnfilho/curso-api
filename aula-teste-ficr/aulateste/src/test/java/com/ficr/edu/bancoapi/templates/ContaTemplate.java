@@ -23,6 +23,8 @@ public class ContaTemplate {
 
     public static final String CONTA_NAO_ENCONTRADA = "Conta nao encontrada id: %d";
 
+    public static final String URI = "/contas";
+
 
     public static Conta entidade(){
         return new Conta.Builder()
