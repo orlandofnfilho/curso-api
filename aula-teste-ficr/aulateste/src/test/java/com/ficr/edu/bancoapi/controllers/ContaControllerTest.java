@@ -19,21 +19,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 ;
-
-import java.net.URI;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
-import static org.mockito.Mockito.when;
 
 @AutoConfigureMockMvc
 @ContextConfiguration
@@ -48,18 +43,10 @@ public class ContaControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     private Conta conta;
-
-    private Conta contaOrigin;
-
-    private Conta contaDestino;
-
     private ContaEntradaDTO entradaDTO;
-
     private TransferenciaDTO transferenciaDTO;
     private TransacaoDTO transacaoDTO;
-
     private ObjectMapper mapper;
 
 
@@ -70,15 +57,13 @@ public class ContaControllerTest {
                 .build();
         conta = ContaTemplate.entidade();
         entradaDTO = ContaTemplate.entradaDTO();
-        contaDestino = ContaTemplate.contaDestino();
-        contaOrigin = ContaTemplate.contaOrigin();
         transacaoDTO = ContaTemplate.transacaoDTO();
         transferenciaDTO = ContaTemplate.transferenciaDTO();
         mapper = new ObjectMapper();
     }
 
     @Test
-    void quandoSalvarUmaContaDeveRetornarStatusOk()throws Exception{
+    void quandoSalvarUmaContaDeveRetornarStatusOk() throws Exception {
         when(contaService.saveConta(any())).thenReturn(conta);
 
         String request = mapper.writeValueAsString(entradaDTO);
@@ -113,15 +98,15 @@ public class ContaControllerTest {
     @Test
     void quandoRecuperarUmaContaInvalidaPeloIdDeveRetornarStatusNotFound() throws Exception {
         when(contaService.getContaById(anyLong())).thenThrow(ResourceNotFoundException.class);
-        this.mockMvc.perform(get(ContaTemplate.URI+"/{idConta}", 1L))
+        this.mockMvc.perform(get(ContaTemplate.URI + "/{idConta}", 1L))
                 .andExpect(status().isNotFound())
                 .andDo(print());
     }
 
     @Test
-    void quandoDeletaUmaContaValidaDeveRetornarStatusNoContent()throws Exception{
+    void quandoDeletaUmaContaValidaDeveRetornarStatusNoContent() throws Exception {
         doNothing().when(contaService).deleteById(anyLong());
-        this.mockMvc.perform(delete(ContaTemplate.URI+"/{idConta}", 1L))
+        this.mockMvc.perform(delete(ContaTemplate.URI + "/{idConta}", 1L))
                 .andExpect(status().isNoContent())
                 .andDo(print());
     }
@@ -129,7 +114,7 @@ public class ContaControllerTest {
     @Test
     void quandoDeletarUmaContaInvalidaDeveRetornarStatusNotFound() throws Exception {
         doThrow(ResourceNotFoundException.class).when(contaService).deleteById(anyLong());
-        this.mockMvc.perform(delete(ContaTemplate.URI+"/{idConta}", 1L))
+        this.mockMvc.perform(delete(ContaTemplate.URI + "/{idConta}", 1L))
                 .andExpect(status().isNotFound())
                 .andDo(print());
     }
@@ -140,21 +125,22 @@ public class ContaControllerTest {
         conta.setCliente("Fernando");
 
         String request = mapper.writeValueAsString(conta);
-        this.mockMvc.perform(put(ContaTemplate.URI+"/{idConta}", 1L)
-                .contentType("application/json;charset=UTF-8")
-                .content(request))
+        this.mockMvc.perform(put(ContaTemplate.URI + "/{idConta}", 1L)
+                        .contentType("application/json;charset=UTF-8")
+                        .content(request))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.cliente").value("Fernando"))
                 .andDo(print());
     }
+
     @Test
     void quandoAtualizarUmaContaValidaDeveRetornarStatusNotFound() throws Exception {
         when(contaService.updateConta(any(), anyLong())).thenThrow(ResourceNotFoundException.class);
         conta.setCliente("Fernando");
 
         String request = mapper.writeValueAsString(conta);
-        this.mockMvc.perform(put(ContaTemplate.URI+"/{idConta}", 1L)
+        this.mockMvc.perform(put(ContaTemplate.URI + "/{idConta}", 1L)
                         .contentType("application/json;charset=UTF-8")
                         .content(request))
                 .andExpect(status().isNotFound())
@@ -162,11 +148,11 @@ public class ContaControllerTest {
     }
 
     @Test
-    void quandoDepositarUmValorEmUmaContaValidaDeveRetornarStatusOk() throws Exception{
+    void quandoDepositarUmValorEmUmaContaValidaDeveRetornarStatusOk() throws Exception {
         when(contaService.depositar(any())).thenReturn("Deposito realizado com sucesso!");
 
         String request = mapper.writeValueAsString(transacaoDTO);
-        this.mockMvc.perform(post(ContaTemplate.URI+"/depositar")
+        this.mockMvc.perform(post(ContaTemplate.URI + "/depositar")
                         .contentType("application/json;charset=UTF-8")
                         .content(request))
                 .andExpect(status().isOk())
@@ -175,11 +161,11 @@ public class ContaControllerTest {
     }
 
     @Test
-    void quandoDepositarUmValorEmUmaContaInvalidaDeveRetornarStatusNotFound()throws Exception{
+    void quandoDepositarUmValorEmUmaContaInvalidaDeveRetornarStatusNotFound() throws Exception {
         when(contaService.depositar(any())).thenThrow(ResourceNotFoundException.class);
 
         String request = mapper.writeValueAsString(transacaoDTO);
-        this.mockMvc.perform(post(ContaTemplate.URI+"/depositar")
+        this.mockMvc.perform(post(ContaTemplate.URI + "/depositar")
                         .contentType("application/json;charset=UTF-8")
                         .content(request))
                 .andExpect(status().isNotFound())
@@ -187,12 +173,12 @@ public class ContaControllerTest {
     }
 
     @Test
-    void quandoDepositarUmValorInvalidoEmUmaContaInvalidaDeveRetornarStatusBadRequest()throws Exception{
+    void quandoDepositarUmValorInvalidoEmUmaContaInvalidaDeveRetornarStatusBadRequest() throws Exception {
         when(contaService.depositar(any())).thenThrow(BusinessRuleException.class);
 
         transacaoDTO.setValor(-100.0);
         String request = mapper.writeValueAsString(transacaoDTO);
-        this.mockMvc.perform(post(ContaTemplate.URI+"/depositar")
+        this.mockMvc.perform(post(ContaTemplate.URI + "/depositar")
                         .contentType("application/json;charset=UTF-8")
                         .content(request))
                 .andExpect(status().isBadRequest())
@@ -205,7 +191,7 @@ public class ContaControllerTest {
 
         conta.setSaldo(500.0);
         String request = mapper.writeValueAsString(transacaoDTO);
-        this.mockMvc.perform(post(ContaTemplate.URI+"/sacar")
+        this.mockMvc.perform(post(ContaTemplate.URI + "/sacar")
                         .contentType("application/json;charset=UTF-8")
                         .content(request))
                 .andExpect(status().isOk())
@@ -218,7 +204,7 @@ public class ContaControllerTest {
         when(contaService.sacar(any())).thenThrow(BusinessRuleException.class);
 
         String request = mapper.writeValueAsString(transacaoDTO);
-        this.mockMvc.perform(post(ContaTemplate.URI+"/sacar")
+        this.mockMvc.perform(post(ContaTemplate.URI + "/sacar")
                         .contentType("application/json;charset=UTF-8")
                         .content(request))
                 .andExpect(status().isBadRequest())
@@ -226,11 +212,11 @@ public class ContaControllerTest {
     }
 
     @Test
-    void quandoSacarUmValorValidoDeUmaContaInvalidaDeveRetornarStatusNotFound()throws Exception{
+    void quandoSacarUmValorValidoDeUmaContaInvalidaDeveRetornarStatusNotFound() throws Exception {
         when(contaService.sacar(any())).thenThrow(ResourceNotFoundException.class);
 
         String request = mapper.writeValueAsString(transacaoDTO);
-        this.mockMvc.perform(post(ContaTemplate.URI+"/sacar")
+        this.mockMvc.perform(post(ContaTemplate.URI + "/sacar")
                         .contentType("application/json;charset=UTF-8")
                         .content(request))
                 .andExpect(status().isNotFound())
@@ -238,24 +224,24 @@ public class ContaControllerTest {
     }
 
     @Test
-    void quandoRealizarUmaTranferenciaEntreContasValidasComSaldoValidoDeveRetornarStatusOk()throws Exception{
+    void quandoRealizarUmaTranferenciaEntreContasValidasComSaldoValidoDeveRetornarStatusOk() throws Exception {
         when(contaService.realizarTranferencia(any())).thenReturn("Transferência realizada com sucesso!");
 
         String request = mapper.writeValueAsString(transferenciaDTO);
-        this.mockMvc.perform(post(ContaTemplate.URI+"/transferir")
-                .contentType("application/json;charset=UTF-8")
-                .content(request))
+        this.mockMvc.perform(post(ContaTemplate.URI + "/transferir")
+                        .contentType("application/json;charset=UTF-8")
+                        .content(request))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Transferência realizada com sucesso!"))
                 .andDo(print());
     }
 
     @Test
-    void quandoRealizarUmaTransferenciaComContaDestinoInvalidaDeveRetornarStatusNotFound()throws Exception{
+    void quandoRealizarUmaTransferenciaComContaDestinoInvalidaDeveRetornarStatusNotFound() throws Exception {
         when(contaService.realizarTranferencia(any())).thenThrow(ResourceNotFoundException.class);
 
         String request = mapper.writeValueAsString(transferenciaDTO);
-        this.mockMvc.perform(post(ContaTemplate.URI+"/transferir")
+        this.mockMvc.perform(post(ContaTemplate.URI + "/transferir")
                         .contentType("application/json;charset=UTF-8")
                         .content(request))
                 .andExpect(status().isNotFound())
@@ -263,12 +249,12 @@ public class ContaControllerTest {
     }
 
     @Test
-    void quandoRealizarUmaTransferenciaEntreContasValidasESaldoInvalidoDeveRetornarStatusBadRequest()throws Exception{
+    void quandoRealizarUmaTransferenciaEntreContasValidasESaldoInvalidoDeveRetornarStatusBadRequest() throws Exception {
         when(contaService.realizarTranferencia(any())).thenThrow(BusinessRuleException.class);
 
         transferenciaDTO.setValor(1000.0);
         String request = mapper.writeValueAsString(transferenciaDTO);
-        this.mockMvc.perform(post(ContaTemplate.URI+"/transferir")
+        this.mockMvc.perform(post(ContaTemplate.URI + "/transferir")
                         .contentType("application/json;charset=UTF-8")
                         .content(request))
                 .andExpect(status().isBadRequest())
