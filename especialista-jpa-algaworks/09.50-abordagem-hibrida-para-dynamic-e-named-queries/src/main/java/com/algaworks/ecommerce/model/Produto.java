@@ -3,6 +3,7 @@ package com.algaworks.ecommerce.model;
 import com.algaworks.ecommerce.listener.GenericoListener;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -20,6 +21,7 @@ import java.util.List;
 @Table(name = "produto",
         uniqueConstraints = { @UniqueConstraint(name = "unq_nome", columnNames = { "nome" }) },
         indexes = { @Index(name = "idx_nome", columnList = "nome") })
+@ToString
 public class Produto extends EntidadeBaseInteger {
 
     @Column(name = "data_criacao", updatable = false, nullable = false)
