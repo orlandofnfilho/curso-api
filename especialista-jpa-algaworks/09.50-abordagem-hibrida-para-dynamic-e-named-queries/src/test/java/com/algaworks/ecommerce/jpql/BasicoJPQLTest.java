@@ -2,10 +2,7 @@ package com.algaworks.ecommerce.jpql;
 
 import com.algaworks.ecommerce.EntityManagerTest;
 import com.algaworks.ecommerce.dto.ProdutoDTO;
-import com.algaworks.ecommerce.model.Cliente;
-import com.algaworks.ecommerce.model.Pagamento;
-import com.algaworks.ecommerce.model.Pedido;
-import com.algaworks.ecommerce.model.Produto;
+import com.algaworks.ecommerce.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,6 +13,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,20 +41,15 @@ public class BasicoJPQLTest extends EntityManagerTest {
         CriteriaQuery<Pedido> criteriaQuery = criteriaBuilder.createQuery(Pedido.class);
         Root<Pedido> root = criteriaQuery.from(Pedido.class);
 
-        Join<Pedido, Pagamento> joinPagamento = root.join("pagamento");
-
-        criteriaQuery.select(root);
+        Join<Pedido, ItemPedido> joinPedido = root.join("itens");
+        criteriaQuery.select(root).distinct(true);
+        criteriaQuery.where(criteriaBuilder.equal(joinPedido.get("produto").get("id"), 1));
 
         TypedQuery<Pedido> typedQuery = entityManager.createQuery(criteriaQuery);
-        List<Pedido> resultado = typedQuery.getResultList();
 
-        log.info("Resultado: "+resultado
-                .stream()
-                .map(pedido -> pedido.getId().toString())
-                .collect(Collectors.joining(",")));
-
-
+        log.info("Resultado: " + typedQuery.getResultList().stream().map(pedido -> pedido.getId().toString()));
     }
+
 
     @Test
     public void ordenarResultados() {
