@@ -2,23 +2,27 @@ package com.algaworks.ecommerce.jpql;
 
 import com.algaworks.ecommerce.EntityManagerTest;
 import com.algaworks.ecommerce.dto.ProdutoDTO;
-import com.algaworks.ecommerce.model.*;
+import com.algaworks.ecommerce.model.Cliente;
+import com.algaworks.ecommerce.model.Pedido;
+import com.algaworks.ecommerce.model.Produto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.persistence.ParameterMode;
 import javax.persistence.Query;
+import javax.persistence.StoredProcedureQuery;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Root;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 public class BasicoJPQLTest extends EntityManagerTest {
+
+    Logger logger = LoggerFactory.getLogger(BasicoJPQLTest.class);
+
 
     @Test
     public void usarDistinct() {
@@ -30,24 +34,26 @@ public class BasicoJPQLTest extends EntityManagerTest {
 
         List<Pedido> lista = typedQuery.getResultList();
         Assert.assertFalse(lista.isEmpty());
-
+        logger.info("testando logger....");
+        logger.error("testando logger....");
         System.out.println(lista.size());
     }
 
     @Test
     public void jpqlEstudar() {
 
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Pedido> criteriaQuery = criteriaBuilder.createQuery(Pedido.class);
-        Root<Pedido> root = criteriaQuery.from(Pedido.class);
 
-        Join<Pedido, ItemPedido> joinPedido = root.join("itens");
-        criteriaQuery.select(root).distinct(true);
-        criteriaQuery.where(criteriaBuilder.equal(joinPedido.get("produto").get("id"), 1));
+        StoredProcedureQuery storedProcedureQuery = entityManager
+                .createStoredProcedureQuery("BuscarProdutosPorNome", Produto.class);
+        storedProcedureQuery.registerStoredProcedureParameter("nomeProduto", String.class, ParameterMode.IN);
+        storedProcedureQuery.setParameter("nomeProduto","Kindle");
 
-        TypedQuery<Pedido> typedQuery = entityManager.createQuery(criteriaQuery);
+        List<Produto> resultado = storedProcedureQuery.getResultList();
 
-        log.info("Resultado: " + typedQuery.getResultList().stream().map(pedido -> pedido.getId().toString()));
+
+        log.info("{}", resultado.stream()
+                .map(x -> x.getNome()).collect(Collectors.joining(",")));
+
     }
 
 
