@@ -5,23 +5,22 @@ import com.algaworks.ecommerce.dto.ProdutoDTO;
 import com.algaworks.ecommerce.model.Cliente;
 import com.algaworks.ecommerce.model.Pedido;
 import com.algaworks.ecommerce.model.Produto;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.persistence.ParameterMode;
 import javax.persistence.Query;
 import javax.persistence.StoredProcedureQuery;
 import javax.persistence.TypedQuery;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Slf4j
 public class BasicoJPQLTest extends EntityManagerTest {
 
-    Logger logger = LoggerFactory.getLogger(BasicoJPQLTest.class);
+
+    private static final Logger logger = LogManager.getLogger(BasicoJPQLTest.class);
 
 
     @Test
@@ -34,8 +33,6 @@ public class BasicoJPQLTest extends EntityManagerTest {
 
         List<Pedido> lista = typedQuery.getResultList();
         Assert.assertFalse(lista.isEmpty());
-        logger.info("testando logger....");
-        logger.error("testando logger....");
         System.out.println(lista.size());
     }
 
@@ -46,13 +43,13 @@ public class BasicoJPQLTest extends EntityManagerTest {
         StoredProcedureQuery storedProcedureQuery = entityManager
                 .createStoredProcedureQuery("BuscarProdutosPorNome", Produto.class);
         storedProcedureQuery.registerStoredProcedureParameter("nomeProduto", String.class, ParameterMode.IN);
-        storedProcedureQuery.setParameter("nomeProduto","Kindle");
+        storedProcedureQuery.setParameter("nomeProduto", "Kindle");
 
         List<Produto> resultado = storedProcedureQuery.getResultList();
 
-
-        log.info("{}", resultado.stream()
-                .map(x -> x.getNome()).collect(Collectors.joining(",")));
+        logger.info("testando logger...."+new Date());
+        logger.error("testando logger...."+ new Date());
+        resultado.forEach(x -> System.out.println("ID: " + x.getId() + " Nome: " + x.getNome()));
 
     }
 
