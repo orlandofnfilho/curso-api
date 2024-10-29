@@ -5,6 +5,10 @@ import com.algaworks.ecommerce.dto.ProdutoDTO;
 import com.algaworks.ecommerce.model.Cliente;
 import com.algaworks.ecommerce.model.Pedido;
 import com.algaworks.ecommerce.model.Produto;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfReader;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.utils.PdfMerger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
@@ -14,8 +18,14 @@ import javax.persistence.ParameterMode;
 import javax.persistence.Query;
 import javax.persistence.StoredProcedureQuery;
 import javax.persistence.TypedQuery;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.zip.GZIPOutputStream;
 
 public class BasicoJPQLTest extends EntityManagerTest {
 
@@ -51,6 +61,73 @@ public class BasicoJPQLTest extends EntityManagerTest {
         logger.error("testando logger...."+ new Date());
         resultado.forEach(x -> System.out.println("ID: " + x.getId() + " Nome: " + x.getNome()));
 
+    }
+
+    // Método para comprimir os bytes e salvar como arquivo comprimido
+    public static void compressAndSaveAsFile(byte[] data, String outputPath) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(outputPath);
+             GZIPOutputStream gzipOS = new GZIPOutputStream(fos)) {
+            gzipOS.write(data);
+        }
+    }
+
+    private static List<InputStream> loadBase64StreamsFromFolder(String folderPath) {
+        List<InputStream> base64Streams = new ArrayList<>();
+        try {
+            // Caminho para a pasta que contém os arquivos base64
+            Files.list(Paths.get(folderPath))
+                    .filter(Files::isRegularFile)
+                    .forEach(filePath -> {
+                        try {
+                            InputStream base64Stream = new FileInputStream(filePath.toFile());
+                            base64Streams.add(base64Stream);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return base64Streams;
+    }
+
+    @Test
+    public void unificarDocumentos() {
+        String folderPath = "E:/Downloads/base64teste";  // Pasta onde os arquivos base64 estão localizados
+
+        List<InputStream> base64Streams = loadBase64StreamsFromFolder(folderPath);  // Carrega os streams de base64 do disco
+
+        String outputFilePath = "C:/temp/arquivo-unificado.pdf";
+        String compressedOutputFilePath = "C:/temp/arquivo-unificado-comprimido.pdf.gz";
+
+        try {
+            PdfDocument pdfDoc = new PdfDocument(new PdfWriter(outputFilePath));
+            PdfMerger merger = new PdfMerger(pdfDoc);
+
+            for (InputStream base64Stream : base64Streams) {
+                Base64.Decoder decoder = Base64.getMimeDecoder();
+                InputStream decodedStream = decoder.wrap(base64Stream);
+
+                PdfDocument tempPdf = new PdfDocument(new PdfReader(decodedStream));
+                merger.merge(tempPdf, 1, tempPdf.getNumberOfPages());
+                tempPdf.close();
+
+                // Fecha o stream de base64
+                base64Stream.close();
+            }
+
+            pdfDoc.close();
+            System.out.println("PDFs unidos com sucesso em " + outputFilePath);
+
+            // Lê o arquivo unificado e comprime, depois salva como um novo arquivo comprimido
+            byte[] pdfData = Files.readAllBytes(Paths.get(outputFilePath));
+            compressAndSaveAsFile(pdfData, compressedOutputFilePath);
+
+            System.out.println("Arquivo comprimido salvo com sucesso em " + compressedOutputFilePath);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
